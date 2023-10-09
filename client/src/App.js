@@ -1,25 +1,38 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import axios from 'axios';
+import StoryCard from './components/storyCard/StoryCard';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	// locals
+	const [stories, setStories] = useState([]);
+
+	// effects
+	useEffect(() => {
+		fetchStories();
+	}, [])
+
+	// functions
+	const fetchStories = async () => {
+		const response = await axios.get('http://localhost:8000/topStories');
+		setStories(response.data);
+	}
+
+	return (
+		<div className='main'>
+			<h1>NYT Top Stories</h1>
+			<div className="grid">
+				{stories.map((story, index) =>
+					<StoryCard
+						key={index}
+						title={story.title}
+						url={story.url}
+						img={story.multimedia[0].url}
+					/>
+				)}
+			</div>
+		</div>
+	);
 }
 
 export default App;
